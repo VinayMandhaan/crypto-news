@@ -8,6 +8,7 @@ import axios from "axios"
 import { useEffect, useRef, useState } from "react"
 import { GestureHandlerRootView, PanGestureHandler, State } from 'react-native-gesture-handler';
 import GestureRecognizer from "react-native-swipe-gestures"
+import { getCryptoNews } from "../../redux/actions/crypto"
 
 
 const data = [
@@ -48,10 +49,12 @@ const SCREEN_HEIGHT = Dimensions.get('window').height
 
 const Categories = ({ navigation }) => {
     const dispatch = useDispatch()
-    const newsData = useSelector((state: RootState) => state.filter.newsData)
+    const newsData = useSelector((state: RootState) => state.filter.cryptoNews)
     const translateY = useRef(new Animated.Value(0)).current;
     const translateX = useRef(new Animated.Value(0)).current;
     const [cryptoPrice, setCryptoPrice] = useState()
+    const [trendingData, setTrendingData] = useState()
+    const [cryptoData, setCryptoData] = useState()
 
     const handleGesture = Animated.event(
         [{ nativeEvent: { translationX: translateX } }],
@@ -83,6 +86,8 @@ const Categories = ({ navigation }) => {
 
     useEffect(() => {
         getData()
+        getTrending()
+        getCryptoData()
     }, [])
 
     const getData = async () => {
@@ -100,18 +105,42 @@ const Categories = ({ navigation }) => {
         })
     }
 
+    const getTrending = async() => {
+        await axios({
+            method:'GET',
+            url:'https://cryptonews-api.com/api/v1/trending-headlines?&page=1&token=pnudnubwjqdofl14enbotqh6by28lc3g4mz1tyuo',
+        }).then((res) => {
+            setTrendingData(res.data.data)
+        }).catch(err => {
+            console.log(err)
+        })
+    }
+
     const renderData = ({ item }) => {
         return (
             <TouchableOpacity onPress={() => {
-                dispatch(setSelectedFilter(item.title))
+                dispatch(getCryptoNews(item?.ticker))
                 navigation.navigate('Home')
             }} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 100 }}>
-                {item.icon}
+                <View style={{display:'flex', alignItems:'center', justifyContent:'center', width:48, height:48, borderRadius:48/2, backgroundColor:'#ffcb37'}}>
+                    <Text>{item.ticker}</Text>
+                </View>
                 <View style={{ marginTop: 12 }}>
-                    <Text>{item.title}</Text>
+                    <Text>{item.name}</Text>
                 </View>
             </TouchableOpacity>
         )
+    }
+
+    const getCryptoData = async() => {
+        await axios({
+            method:'GET',
+            url:'https://cryptonews-api.com/api/v1/top-mention?&date=last7days&token=pnudnubwjqdofl14enbotqh6by28lc3g4mz1tyuo',
+        }).then((res) => {
+            setCryptoData(res.data.data.all)
+        }).catch(err => {
+            console.log(err)
+        })
     }
 
     return (
@@ -119,14 +148,13 @@ const Categories = ({ navigation }) => {
             <ScrollView>
                 <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 12, marginLeft: 8, marginRight: 8 }}>
                     <View>
-                        <AntDesign name='setting' size={20} />
-                    </View>
-                    <View>
                         <Text style={{ fontWeight: 'bold' }}>Discover</Text>
                     </View>
-                    <View>
+                    <TouchableOpacity onPress={() => {
+                        navigation.navigate('Home')
+                    }}>
                         <Text>Feed</Text>
-                    </View>
+                    </TouchableOpacity>
                 </View>
                 {/* <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 12, marginLeft: 8, marginRight: 8 }}>
                     <TextInput placeholder="Search for News, Topics" style={{ backgroundColor: '#E8E8E8', width: '100%', height: 48, textAlign: 'center', borderRadius: 4, fontWeight: 'bold' }} />
@@ -174,7 +202,7 @@ const Categories = ({ navigation }) => {
 
                 </View>
                 <View style={{ marginTop: 4, marginLeft: 8, marginBottom: 24 }}>
-                    <FlatList showsHorizontalScrollIndicator={false} horizontal data={data} renderItem={renderData} />
+                    <FlatList showsHorizontalScrollIndicator={false} horizontal data={cryptoData?.slice(0,8)} renderItem={renderData} />
                 </View>
                 <GestureRecognizer onSwipeLeft={() => {
                     navigation.navigate('Home')
@@ -192,10 +220,10 @@ const Categories = ({ navigation }) => {
                             newsData?.slice(0, 3)?.map((v, i) => (
                                 <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }} key={i}>
                                     <View style={{ width: '70%' }}>
-                                        <Text>{v?.title}</Text>
+                                        <Text style={{fontSize:14}}>{v?.title}</Text>
                                     </View>
                                     <View style={{ display: 'flex', alignItems: 'center', width: '30%' }}>
-                                        <Image style={{ width: 80, height: 80, objectFit: 'contain' }} source={{ uri: v?.metadata?.image }} />
+                                        <Image style={{ width: 80, height: 80, objectFit: 'contain' }} source={{ uri: v?.image_url}} />
 
                                     </View>
                                 </View>
@@ -204,7 +232,22 @@ const Categories = ({ navigation }) => {
                     </View>
                     <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginLeft: 8, marginTop: 24, marginRight: 8 }}>
                         <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Trending</Text>
+                        <TouchableOpacity onPress={() => {
+                            navigation.navigate('Trending', {
+                                trendingData:trendingData
+                            })
+                        }}>
                         <Text style={{ fontSize: 12, fontWeight: 'bold' }}>VIEW ALL</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={{marginLeft:8, marginTop:16}}>
+                        {
+                            trendingData && trendingData?.slice(0,6)?.map((v,i) => (
+                                <View style={{marginBottom:12, borderBottomColor:'#d3d3d3', borderBottomWidth:1, paddingBottom:8}} key={i}>
+                                    <Text style={{fontSize:14, fontWeight:'bold'}}>{v.headline}</Text>
+                                </View>
+                            ))
+                        }
                     </View>
                 </GestureRecognizer>
             </ScrollView>

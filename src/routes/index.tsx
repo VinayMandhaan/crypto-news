@@ -8,6 +8,8 @@ import NewsDetails from '../components/NewsDetails';
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Account from '../screens/Account';
+import BookmarkDetails from '../screens/BookmarkDetails';
+import Trending from '../screens/Trending';
 
 
 const Stack = createNativeStackNavigator();
@@ -33,6 +35,7 @@ function DashboardTabs() {
                         alignItems:'center',
                         justifyContent:'center',
                         backgroundColor: 'white',
+                        borderTopColor:'white',
                         height:54
                     },
                     null
@@ -77,6 +80,8 @@ const Routes = () => {
                 <Stack.Screen name="Home" component={Home} options={{ headerShown: false, animation: 'slide_from_right' }} />
                 <Stack.Screen name="Categories" component={Categories} options={{ headerShown: false, animation: 'slide_from_left' }} />
                 <Stack.Screen name="NewsDetails" component={NewsDetails} options={{ headerShown: false }} />
+                <Stack.Screen name="BookmarkDetails" component={BookmarkDetails} options={{ headerShown: false }} />
+                <Stack.Screen name="Trending" component={Trending} options={{ headerShown: false }} />
             </Stack.Navigator>
         </NavigationContainer>
     )

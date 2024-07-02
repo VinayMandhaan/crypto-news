@@ -10,6 +10,7 @@ import Carousel from 'react-native-snap-carousel';
 import { GestureHandlerRootView, PanGestureHandler, State } from 'react-native-gesture-handler';
 import { setData } from '../../redux/reducer/filterSlice';
 import Logo from '../../assets/images/loog.png'
+import { getCryptoNews } from '../../redux/actions/crypto';
 
 const SCREEN_WIDTH = Dimensions.get('window').width
 const SCREEN_HEIGHT = Dimensions.get('window').height
@@ -18,6 +19,7 @@ const SCREEN_HEIGHT = Dimensions.get('window').height
 const Home = ({ navigation }) => {
     const dispatch = useDispatch()
     const selectedFilter = useSelector((state: RootState) => state.filter.selectedFilter)
+    const cryptoNews = useSelector((state:RootState) => state.filter.cryptoNews)
     const translateY = useRef(new Animated.Value(0)).current;
     const translateX = useRef(new Animated.Value(0)).current;
     const [newsData, setNewsData] = useState([]);
@@ -56,26 +58,41 @@ const Home = ({ navigation }) => {
     };
 
     const getData = async () => {
-        try {
-            setLoading(true)
-            const response = await axios.get(`https://cryptopanic.com/api/v1/posts/?auth_token=91affd44d15e1e7a075bf7f08781b0c96a4d4578&metadata=true&filter=${selectedFilter}`);
-            const newsResults = response.data.results;
-            dispatch(setData(response.data.results))
-            const prefetchPromises = newsResults.map((item: any) => {
-                if (item.metadata?.image) {
-                    return Image.prefetch(item.metadata?.image).catch(error => {
-                        return Promise.resolve();
-                    });
-                }
-                return Promise.resolve();
-            });
-            await Promise.all(prefetchPromises);
-            setNewsData(newsResults);
-            setLoading(false)
+        // try {
+        //     setLoading(true)
+        //     const response = await axios.get(`https://cryptopanic.com/api/v1/posts/?auth_token=91affd44d15e1e7a075bf7f08781b0c96a4d4578&metadata=true&filter=${selectedFilter}`);
+        //     const newsResults = response.data.results;
+        //     dispatch(setData(response.data.results))
+        //     const prefetchPromises = newsResults.map((item: any) => {
+        //         if (item.metadata?.image) {
+        //             return Image.prefetch(item.metadata?.image).catch(error => {
+        //                 return Promise.resolve();
+        //             });
+        //         }
+        //         return Promise.resolve();
+        //     });
+        //     await Promise.all(prefetchPromises);
+        //     setNewsData(newsResults);
+        //     setLoading(false)
 
-        } catch (err) {
-            console.log(err);
-            setLoading(false)
+        // } catch (err) {
+        //     console.log(err);
+        //     setLoading(false)
+        // }
+        try{
+            dispatch(getCryptoNews(null))
+            // const prefetchPromises = newsResults.map((item: any) => {
+            //     if (item.image_url) {
+            //         return Image.prefetch(item.image_url).catch(error => {
+            //             return Promise.resolve();
+            //         });
+            //     }
+            //     return Promise.resolve();
+            // });
+            // await Promise.all(prefetchPromises);
+            // setNewsData(newsResults);
+        }catch(err) {
+            console.log(err)
         }
     };
 
@@ -143,7 +160,7 @@ const Home = ({ navigation }) => {
                 >
                     <Animated.View style={{ flex: 1, transform: [{ translateX }] }}>
                         <Carousel
-                            data={newsData}
+                            data={cryptoNews}
                             layout='stack'
                             containerCustomStyle={{ flex: 1 }}
                             renderItem={renderItem}
