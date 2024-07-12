@@ -14,6 +14,7 @@ import Trending from '../screens/Trending';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+export const navigationRef = React.createRef();
 
 
 function DashboardTabs() {
@@ -72,9 +73,10 @@ function DashboardTabs() {
     );
 }
 
+
 const Routes = () => {
     return (
-        <NavigationContainer>
+        <NavigationContainer ref={navigationRef}>
             <Stack.Navigator>
                 <Stack.Screen name="Dashboard" component={DashboardTabs} options={{ headerShown: false, animation: 'slide_from_right' }} />
                 <Stack.Screen name="Home" component={Home} options={{ headerShown: false, animation: 'slide_from_right' }} />

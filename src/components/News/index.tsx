@@ -107,7 +107,9 @@ const News = ({ newsData, currentStoryIndex, translateY, navigation }: any) => {
                                     {/* <TouchableOpacity style={{ marginRight: 12 }}>
                                         <Entypo name="share" color={'white'} size={20} />
                                     </TouchableOpacity> */}
-                                    <TouchableOpacity>
+                                    <TouchableOpacity onPress={() => {
+                                        handleSubmit(newsData)
+                                    }}>
                                         <Entypo name="bookmark" color={'white'} size={20} />
                                     </TouchableOpacity>
                                 </View>

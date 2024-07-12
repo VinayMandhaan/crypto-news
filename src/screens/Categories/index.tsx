@@ -105,10 +105,10 @@ const Categories = ({ navigation }) => {
         })
     }
 
-    const getTrending = async() => {
+    const getTrending = async () => {
         await axios({
-            method:'GET',
-            url:'https://cryptonews-api.com/api/v1/trending-headlines?&page=1&token=pnudnubwjqdofl14enbotqh6by28lc3g4mz1tyuo',
+            method: 'GET',
+            url: 'https://cryptonews-api.com/api/v1/trending-headlines?&page=1&token=pnudnubwjqdofl14enbotqh6by28lc3g4mz1tyuo',
         }).then((res) => {
             setTrendingData(res.data.data)
         }).catch(err => {
@@ -122,7 +122,7 @@ const Categories = ({ navigation }) => {
                 dispatch(getCryptoNews(item?.ticker))
                 navigation.navigate('Home')
             }} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 100 }}>
-                <View style={{display:'flex', alignItems:'center', justifyContent:'center', width:48, height:48, borderRadius:48/2, backgroundColor:'#ffcb37'}}>
+                <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 48, height: 48, borderRadius: 48 / 2, backgroundColor: '#ffcb37' }}>
                     <Text>{item.ticker}</Text>
                 </View>
                 <View style={{ marginTop: 12 }}>
@@ -132,10 +132,10 @@ const Categories = ({ navigation }) => {
         )
     }
 
-    const getCryptoData = async() => {
+    const getCryptoData = async () => {
         await axios({
-            method:'GET',
-            url:'https://cryptonews-api.com/api/v1/top-mention?&date=last7days&token=pnudnubwjqdofl14enbotqh6by28lc3g4mz1tyuo',
+            method: 'GET',
+            url: 'https://cryptonews-api.com/api/v1/top-mention?&date=last7days&token=pnudnubwjqdofl14enbotqh6by28lc3g4mz1tyuo',
         }).then((res) => {
             setCryptoData(res.data.data.all)
         }).catch(err => {
@@ -144,7 +144,7 @@ const Categories = ({ navigation }) => {
     }
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor:'white' }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
             <ScrollView>
                 <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 12, marginLeft: 8, marginRight: 8 }}>
                     <View>
@@ -188,7 +188,7 @@ const Categories = ({ navigation }) => {
                                         <Text style={{ marginLeft: 8, fontSize: 14 }}>{item.name}({item?.symbol?.toUpperCase()})</Text>
                                     </View>
                                     <View style={{ marginLeft: 4, marginTop: 4 }}>
-                                        <Text style={{ fontSize: 14 }}>${item?.current_price?.toLocaleString()}</Text>
+                                        <Text style={{ fontSize: 14 }}>{item?.current_price?.toLocaleString()}</Text>
                                     </View>
                                     <View style={{ marginLeft: 4, marginTop: 4 }}>
                                         <Text style={{ color: item?.price_change_percentage_24h < 0 ? 'red' : 'green' }}>
@@ -202,7 +202,21 @@ const Categories = ({ navigation }) => {
 
                 </View>
                 <View style={{ marginTop: 4, marginLeft: 8, marginBottom: 24 }}>
-                    <FlatList showsHorizontalScrollIndicator={false} horizontal data={cryptoData?.slice(0,8)} renderItem={renderData} />
+                    <View style={{display:'flex', flexDirection:'row', alignItems:'center'}}>
+                    <TouchableOpacity onPress={() => {
+                        dispatch(getCryptoNews(null))
+                        navigation.navigate('Home')
+                    }} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 100 }}>
+                        <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 48, height: 48, borderRadius: 48 / 2, backgroundColor: '#ffcb37' }}>
+                            <Text>{'All'}</Text>
+                        </View>
+                        <View style={{ marginTop: 12 }}>
+                            <Text>All</Text>
+                        </View>
+                    </TouchableOpacity>
+                    <FlatList showsHorizontalScrollIndicator={false} horizontal data={cryptoData?.slice(0, 8)} renderItem={renderData} />
+                    </View>
+                   
                 </View>
                 <GestureRecognizer onSwipeLeft={() => {
                     navigation.navigate('Home')
@@ -220,10 +234,10 @@ const Categories = ({ navigation }) => {
                             newsData?.slice(0, 3)?.map((v, i) => (
                                 <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }} key={i}>
                                     <View style={{ width: '70%' }}>
-                                        <Text style={{fontSize:14}}>{v?.title}</Text>
+                                        <Text style={{ fontSize: 14 }}>{v?.title}</Text>
                                     </View>
                                     <View style={{ display: 'flex', alignItems: 'center', width: '30%' }}>
-                                        <Image style={{ width: 80, height: 80, objectFit: 'contain' }} source={{ uri: v?.image_url}} />
+                                        <Image style={{ width: 80, height: 80, objectFit: 'contain' }} source={{ uri: v?.image_url }} />
 
                                     </View>
                                 </View>
@@ -234,17 +248,17 @@ const Categories = ({ navigation }) => {
                         <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Trending</Text>
                         <TouchableOpacity onPress={() => {
                             navigation.navigate('Trending', {
-                                trendingData:trendingData
+                                trendingData: trendingData
                             })
                         }}>
-                        <Text style={{ fontSize: 12, fontWeight: 'bold' }}>VIEW ALL</Text>
+                            <Text style={{ fontSize: 12, fontWeight: 'bold' }}>VIEW ALL</Text>
                         </TouchableOpacity>
                     </View>
-                    <View style={{marginLeft:8, marginTop:16}}>
+                    <View style={{ marginLeft: 8, marginTop: 16 }}>
                         {
-                            trendingData && trendingData?.slice(0,6)?.map((v,i) => (
-                                <View style={{marginBottom:12, borderBottomColor:'#d3d3d3', borderBottomWidth:1, paddingBottom:8}} key={i}>
-                                    <Text style={{fontSize:14, fontWeight:'bold'}}>{v.headline}</Text>
+                            trendingData && trendingData?.slice(0, 6)?.map((v, i) => (
+                                <View style={{ marginBottom: 12, borderBottomColor: '#d3d3d3', borderBottomWidth: 1, paddingBottom: 8 }} key={i}>
+                                    <Text style={{ fontSize: 14, fontWeight: 'bold' }}>{v.headline}</Text>
                                 </View>
                             ))
                         }

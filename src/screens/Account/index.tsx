@@ -84,7 +84,7 @@ const Account = ({navigation}) => {
                                         })
                                     }} style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', borderBottomWidth: 1, borderBottomColor: '#d3d3d3' }} key={i}>
                                         <View style={{ width: '30%' }}>
-                                            <Image style={{ width: 100, height: 100, objectFit: 'contain' }} source={{ uri: v?.metadata?.image }} />
+                                            <Image style={{ width: 100, height: 100, objectFit: 'contain' }} source={{ uri: v?.image_url }} />
                                         </View>
                                         <View style={{ width: '70%' }}>
                                             <Text>{v.title}</Text>

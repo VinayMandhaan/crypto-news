@@ -11,6 +11,8 @@ import { GestureHandlerRootView, PanGestureHandler, State } from 'react-native-g
 import { setData } from '../../redux/reducer/filterSlice';
 import Logo from '../../assets/images/loog.png'
 import { getCryptoNews } from '../../redux/actions/crypto';
+import messaging from '@react-native-firebase/messaging';
+import { getFcmToken, registerListenerWithFCM } from '../../utils/notification';
 
 const SCREEN_WIDTH = Dimensions.get('window').width
 const SCREEN_HEIGHT = Dimensions.get('window').height
@@ -19,12 +21,21 @@ const SCREEN_HEIGHT = Dimensions.get('window').height
 const Home = ({ navigation }) => {
     const dispatch = useDispatch()
     const selectedFilter = useSelector((state: RootState) => state.filter.selectedFilter)
-    const cryptoNews = useSelector((state:RootState) => state.filter.cryptoNews)
+    const cryptoNews = useSelector((state: RootState) => state.filter.cryptoNews)
     const translateY = useRef(new Animated.Value(0)).current;
     const translateX = useRef(new Animated.Value(0)).current;
     const [newsData, setNewsData] = useState([]);
     const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
     const [loading, setLoading] = useState(false)
+
+    useEffect(() => {
+        getFcmToken();
+      }, []);
+    
+      useEffect(() => {
+        const unsubscribe = registerListenerWithFCM();
+        return unsubscribe;
+      }, []);
 
 
 
@@ -79,7 +90,7 @@ const Home = ({ navigation }) => {
         //     console.log(err);
         //     setLoading(false)
         // }
-        try{
+        try {
             dispatch(getCryptoNews(null))
             // const prefetchPromises = newsResults.map((item: any) => {
             //     if (item.image_url) {
@@ -91,7 +102,7 @@ const Home = ({ navigation }) => {
             // });
             // await Promise.all(prefetchPromises);
             // setNewsData(newsResults);
-        }catch(err) {
+        } catch (err) {
             console.log(err)
         }
     };
