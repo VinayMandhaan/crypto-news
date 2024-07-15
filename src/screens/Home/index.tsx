@@ -1,18 +1,13 @@
-import axios from 'axios';
 import React, { useState, useRef, useEffect } from 'react';
 import { SafeAreaView, Text, View, Animated, StyleSheet, Image, ActivityIndicator, Dimensions, PanResponder } from 'react-native';
-import GestureRecognizer from 'react-native-swipe-gestures';
-import RenderHtml, { RenderHTML } from 'react-native-render-html';
 import News from '../../components/News';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import Carousel from 'react-native-snap-carousel';
 import { GestureHandlerRootView, PanGestureHandler, State } from 'react-native-gesture-handler';
-import { setData } from '../../redux/reducer/filterSlice';
-import Logo from '../../assets/images/loog.png'
-import { getCryptoNews } from '../../redux/actions/crypto';
-import messaging from '@react-native-firebase/messaging';
+import { getCryptoNews, getCryptoNotificationNews } from '../../redux/actions/crypto';
 import { getFcmToken, registerListenerWithFCM } from '../../utils/notification';
+import { setCryptoNews } from '../../redux/reducer/filterSlice';
 
 const SCREEN_WIDTH = Dimensions.get('window').width
 const SCREEN_HEIGHT = Dimensions.get('window').height
@@ -20,8 +15,10 @@ const SCREEN_HEIGHT = Dimensions.get('window').height
 
 const Home = ({ navigation }) => {
     const dispatch = useDispatch()
+    const carouselRef = useRef()
     const selectedFilter = useSelector((state: RootState) => state.filter.selectedFilter)
     const cryptoNews = useSelector((state: RootState) => state.filter.cryptoNews)
+    const notification = useSelector((state: RootState) => state.notification.notificationNews)
     const translateY = useRef(new Animated.Value(0)).current;
     const translateX = useRef(new Animated.Value(0)).current;
     const [newsData, setNewsData] = useState([]);
@@ -46,13 +43,13 @@ const Home = ({ navigation }) => {
 
     const handleStateChange = ({ nativeEvent }) => {
         if (nativeEvent.state === State.END) {
-            if (nativeEvent.translationX > 50) { // Threshold for left swipe
+            if (nativeEvent.translationX > 50) {
                 Animated.timing(translateX, {
                     toValue: SCREEN_WIDTH,
                     duration: 100,
                     useNativeDriver: true
                 }).start(() => {
-                    navigation.navigate('Categories'); // Replace 'OtherScreen' with your desired screen name
+                    navigation.navigate('Categories'); 
                     setTimeout(() => {
                         translateX.setValue(0);
 
@@ -69,39 +66,13 @@ const Home = ({ navigation }) => {
     };
 
     const getData = async () => {
-        // try {
-        //     setLoading(true)
-        //     const response = await axios.get(`https://cryptopanic.com/api/v1/posts/?auth_token=91affd44d15e1e7a075bf7f08781b0c96a4d4578&metadata=true&filter=${selectedFilter}`);
-        //     const newsResults = response.data.results;
-        //     dispatch(setData(response.data.results))
-        //     const prefetchPromises = newsResults.map((item: any) => {
-        //         if (item.metadata?.image) {
-        //             return Image.prefetch(item.metadata?.image).catch(error => {
-        //                 return Promise.resolve();
-        //             });
-        //         }
-        //         return Promise.resolve();
-        //     });
-        //     await Promise.all(prefetchPromises);
-        //     setNewsData(newsResults);
-        //     setLoading(false)
-
-        // } catch (err) {
-        //     console.log(err);
-        //     setLoading(false)
-        // }
         try {
-            dispatch(getCryptoNews(null))
-            // const prefetchPromises = newsResults.map((item: any) => {
-            //     if (item.image_url) {
-            //         return Image.prefetch(item.image_url).catch(error => {
-            //             return Promise.resolve();
-            //         });
-            //     }
-            //     return Promise.resolve();
-            // });
-            // await Promise.all(prefetchPromises);
-            // setNewsData(newsResults);
+            if(notification) {
+                dispatch(getCryptoNotificationNews(notification))
+                carouselRef?.current?.snapToItem(0);
+            } else {
+                dispatch(getCryptoNews(null))
+            }
         } catch (err) {
             console.log(err)
         }
@@ -109,7 +80,7 @@ const Home = ({ navigation }) => {
 
     useEffect(() => {
         getData();
-    }, []);
+    }, [notification]);
 
     const onSwipeUp = () => {
         Animated.timing(translateY, {
@@ -153,14 +124,14 @@ const Home = ({ navigation }) => {
         )
     }
 
-
-    // if(loading) {
-    //     return (
-    //         <View style={{flex:1, backgroundColor:'white', alignItems:'center', justifyContent:'center'}}>
-    //             <Image style={{width:120, height:120, objectFit:'contain'}} source={require('../../assets/images/logo.png')}/>
-    //         </View>
-    //     )
-    // }
+    const getNewsData = () => {
+        if(notification != null) {
+            let newData = [notification, ...cryptoNews]
+            return newData
+        } else {
+            return cryptoNews
+        }
+    }
 
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
@@ -171,6 +142,7 @@ const Home = ({ navigation }) => {
                 >
                     <Animated.View style={{ flex: 1, transform: [{ translateX }] }}>
                         <Carousel
+                            ref={carouselRef}
                             data={cryptoNews}
                             layout='stack'
                             containerCustomStyle={{ flex: 1 }}

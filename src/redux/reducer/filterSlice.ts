@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { getCryptoNews } from '../actions/crypto';
+import { getCryptoNews, getCryptoNotificationNews } from '../actions/crypto';
 
 type FilterState = {
     selectedFilter: any,
@@ -24,6 +24,9 @@ export const filter = createSlice({
         },
         setData: (state, action) => {
             state.newsData = action.payload
+        },
+        setCryptoNews: (state, action) => {
+            state.cryptoNews = action.payload
         }
     },
     extraReducers: (builder) => {
@@ -36,8 +39,17 @@ export const filter = createSlice({
         })
         builder.addCase(getCryptoNews.rejected, (state, action) => {
         })
+        builder.addCase(getCryptoNotificationNews.pending, (state, action) => {
+            state.isLoading = true;
+        })
+        builder.addCase(getCryptoNotificationNews.fulfilled, (state, action) => {
+            state.isLoading = false;
+            state.cryptoNews = [action.payload?.notificationData, ...action?.payload?.responseData.data];
+        })
+        builder.addCase(getCryptoNotificationNews.rejected, (state, action) => {
+        })
     }
 });
 
-export const { setSelectedFilter, setData } = filter.actions;
+export const { setSelectedFilter, setData, setCryptoNews } = filter.actions;
 export default filter.reducer;

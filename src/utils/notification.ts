@@ -2,6 +2,8 @@ import notifee, { EventType } from '@notifee/react-native';
 import messaging from '@react-native-firebase/messaging';
 import firestore from '@react-native-firebase/firestore';
 import { navigationRef } from '../routes';
+import { store } from '../redux/store';
+import { setNotificationNews } from '../redux/reducer/notificationSlice';
 
 export const getFcmToken = async () => {
     let token = null;
@@ -114,9 +116,11 @@ export function registerListenerWithFCM() {
                     text:detail.notification?.data?.text,
                     news_url:detail.notification?.data?.news_url
                 }
-                navigationRef.current.navigate('BookmarkDetails', {
-                    newsData:newsData
-                })
+                store.dispatch(setNotificationNews(newsData))
+                // navigationRef.current.navigate('BookmarkDetails', {
+                //     newsData:newsData
+                // })
+                navigationRef.current.navigate('Dashboard')
                 // if (detail?.notification?.data?.clickAction) {
                 //   onNotificationClickActionHandling(
                 //     detail.notification.data.clickAction

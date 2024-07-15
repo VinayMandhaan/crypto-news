@@ -13,9 +13,11 @@ import {
 } from 'redux-persist';
 import { MMKV } from 'react-native-mmkv';
 import filterSlice from './reducer/filterSlice';
+import notificationSlice from './reducer/notificationSlice';
 
 const reducers = combineReducers({
-    filter: filterSlice
+    filter: filterSlice,
+    notification:notificationSlice
 });
 
 const storage = new MMKV();
