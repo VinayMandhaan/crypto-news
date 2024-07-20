@@ -6,6 +6,8 @@ import GestureRecognizer from 'react-native-swipe-gestures';
 import Entypo from 'react-native-vector-icons/Entypo'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { RootState } from '../../redux/store';
+import { useSelector } from 'react-redux';
 
 const textStyle = {
     style: {
@@ -31,7 +33,6 @@ const News = ({ newsData, currentStoryIndex, translateY, navigation }: any) => {
             console.log('Error saving bookmark:', error);
         }
     };
-
 
     return (
         <Animated.View style={[styles.card, { transform: [{ translateY }] }]}>

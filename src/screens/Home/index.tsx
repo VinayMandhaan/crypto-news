@@ -23,16 +23,13 @@ const Home = ({ navigation }) => {
     const translateX = useRef(new Animated.Value(0)).current;
     const [newsData, setNewsData] = useState([]);
     const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
-    const [loading, setLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
         getFcmToken();
-      }, []);
-    
-      useEffect(() => {
         const unsubscribe = registerListenerWithFCM();
         return unsubscribe;
-      }, []);
+    }, []);
 
 
 
@@ -49,7 +46,7 @@ const Home = ({ navigation }) => {
                     duration: 100,
                     useNativeDriver: true
                 }).start(() => {
-                    navigation.navigate('Categories'); 
+                    navigation.navigate('Categories');
                     setTimeout(() => {
                         translateX.setValue(0);
 
@@ -67,7 +64,7 @@ const Home = ({ navigation }) => {
 
     const getData = async () => {
         try {
-            if(notification) {
+            if (notification) {
                 dispatch(getCryptoNotificationNews(notification))
                 carouselRef?.current?.snapToItem(0);
             } else {
@@ -125,13 +122,21 @@ const Home = ({ navigation }) => {
     }
 
     const getNewsData = () => {
-        if(notification != null) {
+        if (notification != null) {
             let newData = [notification, ...cryptoNews]
             return newData
         } else {
             return cryptoNews
         }
     }
+
+    // if(isLoading) {
+    //     return (
+    //         <View style={{flex:1, display:'flex', alignItems:'center', justifyContent:'center'}}>
+    //             <ActivityIndicator color={'black'}/>
+    //         </View>
+    //     )
+    // }
 
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
@@ -141,27 +146,30 @@ const Home = ({ navigation }) => {
                     onHandlerStateChange={handleStateChange}
                 >
                     <Animated.View style={{ flex: 1, transform: [{ translateX }] }}>
-                        <Carousel
-                            ref={carouselRef}
-                            data={cryptoNews}
-                            layout='stack'
-                            containerCustomStyle={{ flex: 1 }}
-                            renderItem={renderItem}
-                            sliderWidth={SCREEN_WIDTH}
-                            sliderHeight={SCREEN_HEIGHT}
-                            itemWidth={SCREEN_WIDTH}
-                            itemHeight={SCREEN_HEIGHT}
-                            inactiveSlideOpacity={1}
-                            inactiveSlideScale={1}
-                            vertical={true}
-                            swipeThreshold={10}
-                            //   onEndReached={this.handleEndReached}
-                            nestedScrollEnabled
-                            windowSize={5}
-                            onSnapToItem={(index) => {
-                                setCurrentStoryIndex(index)
-                            }}
-                        />
+                        {
+                            <Carousel
+                                ref={carouselRef}
+                                data={cryptoNews}
+                                layout='stack'
+                                containerCustomStyle={{ flex: 1 }}
+                                renderItem={renderItem}
+                                sliderWidth={SCREEN_WIDTH}
+                                sliderHeight={SCREEN_HEIGHT}
+                                itemWidth={SCREEN_WIDTH}
+                                itemHeight={SCREEN_HEIGHT}
+                                inactiveSlideOpacity={1}
+                                inactiveSlideScale={1}
+                                vertical={true}
+                                swipeThreshold={10}
+                                //   onEndReached={this.handleEndReached}
+                                nestedScrollEnabled
+                                windowSize={5}
+                                onSnapToItem={(index) => {
+                                    setCurrentStoryIndex(index)
+                                }}
+                            />
+                        }
+
                     </Animated.View>
                 </PanGestureHandler>
             </SafeAreaView>

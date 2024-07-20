@@ -29,9 +29,9 @@ const Account = ({navigation}) => {
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
             <View style={{ display:'flex', flexDirection:'row', alignItems:'center', marginLeft: 16, marginTop: 24 }}>
-                <TouchableOpacity>
+                {/* <TouchableOpacity>
                     <Entypo name='chevron-left' size={24} />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
                 <View style={{marginLeft:24}}>
                     <Text style={{fontSize:18, fontWeight:'bold'}}>Bookmarks</Text>
                 </View>

@@ -267,7 +267,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "crypto" */;
+			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "Qwikto" */;
 			compatibilityVersion = "Xcode 12.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -542,7 +542,7 @@
 				CODE_SIGN_ENTITLEMENTS = crypto/crypto.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_TEAM = 7457TQA63H;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = crypto/Info.plist;
@@ -576,7 +576,7 @@
 				CODE_SIGN_ENTITLEMENTS = crypto/crypto.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_TEAM = 7457TQA63H;
 				INFOPLIST_FILE = crypto/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -794,7 +794,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "crypto" */ = {
+		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "Qwikto" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				83CBBA201A601CBA00E9B192 /* Debug */,
